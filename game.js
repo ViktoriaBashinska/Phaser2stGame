@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 1920,
     height: 600,
     physics: {
         default: 'arcade',
@@ -12,34 +12,55 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-        update: update
     }
 };
+var player;
 
+var game = new Phaser.Game(config);
 function preload() {
-    this.load.image("fon","assets/fon.webp");
+    this.load.image("fon", "assets/fon.webp");
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet ('dude', 'assets/dude.png',  { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 }
 function create() {
     //створили фон
-this.add.tileSprite(0,0, worldWidth,1080, "fon").setOrigin(0,0);
-//додали платформи
-platforms = this.physics.add.staticGroup();
-//земля по ширині всього екрану
-for (var x = 0; x < worldWidth; x = x + 450 ){
-    console.log (x)
-platforms.create (x, 1080-120, "ground").setOrigin(0,0).refreshBody();
-}
-//додали гравця
-player = this.physics.add.sprite (1080, 900, "dude");
-player.setBouce(0.2);
-player.setCollideWorldBounds(false);
-//налаштуємо камеру
-this.cameras.main.ssetBounds(0, 0, worldWidth, 1080);
-this.physics.world.setBounds(0, 0, worldWidth, 1080);
+    this.add.tileSprite(0, 0, worldWidth, 1080, "fon").setOrigin(0, 0);
+    //додали платформи
+    platforms = this.physics.add.staticGroup();
+    //земля по ширині всього екрану
+    for (var x = 0; x < worldWidth; x = x + 450) {
+        console.log(x)
+        platforms.create(x, 1080 - 120, "ground").setOrigin(0, 0).refreshBody();
+    }
+    
+    //додали гравця
+    player = this.physics.add.sprite(1080, 900, "dude");
+    player.setBouce(0.2);
+    player.setCollideWorldBounds(false);
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'turn',
+        frames: [{ key: 'dude', frame: 4 }],
+        frameRate: 20
+    });
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.physics.add.collider(player, platforms);
+    //налаштуємо камеру
+    this.cameras.main.ssetBounds(0, 0, worldWidth, 1080);
+    this.physics.world.setBounds(0, 0, worldWidth, 1080);
 
+    
 
 }

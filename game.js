@@ -2,6 +2,13 @@ var config = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+        },
     scene: {
         preload: preload,
         create: create,
@@ -15,6 +22,10 @@ var platforms;
 var stars;
 var stones;
 var trees;
+var score = 0;
+var ScoreText;
+var gameOver = false;
+var worldWidth = 5000;
 var game = new Phaser.Game(config);
 
 function preload ()
@@ -28,7 +39,7 @@ function preload ()
 
 function create ()
 {
-    this.add.image(400, 300, 'fon');
+    this.add.tileSprite(0, 0, worldWidth, 1080, "fon").setOrigin(0, 0);
 }
 
 function update ()

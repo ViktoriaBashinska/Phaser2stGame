@@ -42,10 +42,16 @@ function create() {
     //додаємо платформи
     platforms = this.physics.add.staticGroup();
     //додаємо землю на всю ширину екрану
-    for (var x = 0; x < worldWidth; x = x + 450) {
+    for (var x = 0; x < worldWidth; x = x + 450){
         console.log(x)
         platforms.create(x, 1080-120, "ground").setOrigin(0, 0).refreshBody();
     }
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
+        var y = Phaser.Math.FloatBetween(100, 1000)
+        console.log(Fx, y)
+        platforms.create(x, y, "ground");
+    }
+    
 }
 
 function update() {

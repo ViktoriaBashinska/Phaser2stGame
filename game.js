@@ -15,8 +15,12 @@ var config = {
     }
 };
 var player;
-
+var stars;
+var platforms;
+var fon;
+var bomb;
 var game = new Phaser.Game(config);
+
 function preload() {
     this.load.image("fon", "assets/fon.webp");
     this.load.image('ground', 'assets/platform.png');
@@ -34,7 +38,6 @@ function create() {
         console.log(x)
         platforms.create(x, 1080 - 120, "ground").setOrigin(0, 0).refreshBody();
     }
-    
     //додали гравця
     player = this.physics.add.sprite(1080, 900, "dude");
     player.setBouce(0.2);
@@ -61,6 +64,5 @@ function create() {
     this.cameras.main.ssetBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
 
-    
 
 }

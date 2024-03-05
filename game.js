@@ -75,11 +75,30 @@ function create() {
         // Змінили діапазон висоти платформ
         var y = Phaser.Math.FloatBetween(540, 1080); 
         // Зменшуємо масштаб платформ
-        platforms.create(x, y, 'ground').setScale(0.5).refreshBody(); 
+        platforms.create(x, y, 'ground').setScale(1).refreshBody(); 
         // Збільшили відстань між платформами
         x += Phaser.Math.FloatBetween(200, 700); 
     }
+    //анімація (рух) гравця
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
 
+    this.anims.create({
+        key: 'turn',
+        frames: [{ key: 'dude', frame: 4 }],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
 
     for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
         var y = Phaser.Math.FloatBetween(100, 1000)

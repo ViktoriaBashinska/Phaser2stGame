@@ -16,51 +16,56 @@ var config = {
         update: update
     }
 };
+
 var player;
-var bombs;
-var crates;
-var platforms;
 var stars;
-var stones;
-var trees;
+var bombs;
+var platforms;
+var cursors;
 var score = 0;
-var ScoreText;
 var gameOver = false;
-var worldWidth = 9600;
+var scoreText;
 var game = new Phaser.Game(config);
+var worldWidth = 9600;
 
 function preload() {
+    //Додали асети
     this.load.image('fon', 'assets/fon.webp');
     this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
     this.load.image('crate', 'assets/Crate.png');
-    this.load.image('stone', 'assets/Stone.png');
+    this.load.image('star', 'assets/star.png');
     this.load.image('tree', 'assets/Tree_3.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('stone', 'assets/Stone.png');
+    this.load.image('bomb', 'assets/bomb.png');
+    this.load.spritesheet('dude', 'assets/dude.png',
+        { frameWidth: 32, frameHeight: 48 }
+    );
+    this.load.audio('collectStarSound', 'assets/collect_star.mp3');
+    this.load.audio('explosionSound', 'assets/explosion.mp3');
 }
 
 function create() {
-    //додаємо фон плиткою
+    //Додали платформу та небо
+    ////this.add.image(0, 0, 'fon').setOrigin(0,0)
     this.add.tileSprite(0, 0, worldWidth, 1080, "fon").setOrigin(0, 0);
-    //додаємо платформи
+
     platforms = this.physics.add.staticGroup();
-    //додаємо землю на всю ширину екрану
+    //Створення землі на всю ширину
     for (var x = 0; x < worldWidth; x = x + 384) {
         console.log(x)
-        platforms.create(x, 1080 - 93, "ground").setOrigin(0, 0).refreshBody();
+        platforms.create(x, 1080 - 93, 'ground').setOrigin(0, 0).refreshBody();
     }
 
+    //
     objects = this.physics.add.staticGroup();
 
-    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)) {
-        objects.create(x, 987, 'crate').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 987, 'stone').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 989, 'tree').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)){
+        objects.create(x, 987,'crate').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 987,'stone').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 989,'tree').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
     }
-
-
     //Додали гравця
+
     player = this.physics.add.sprite(1500, 900, 'dude');
     player.setBounce(0.2);
     player.setCollideWorldBounds(false);
@@ -72,14 +77,13 @@ function create() {
 
     var x = 0;
     while (x < worldWidth) {
-        // Змінили діапазон висоти платформ
-        var y = Phaser.Math.FloatBetween(540, 1080); 
-        // Зменшуємо масштаб платформ
-        platforms.create(x, y, 'ground').setScale(1).refreshBody(); 
-        // Збільшили відстань між платформами
-        x += Phaser.Math.FloatBetween(200, 700); 
+        var y = Phaser.Math.FloatBetween(540, 1080); // Змінили діапазон висоти платформ
+        platforms.create(x, y, 'ground').setScale(0.5).refreshBody(); // Зменшили масштаб платформ
+        x += Phaser.Math.FloatBetween(200, 700); // Збільшили відстань між платформами
     }
-    //анімація (рух) гравця
+
+
+
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -99,24 +103,36 @@ function create() {
         frameRate: 10,
         repeat: -1
     });
+    //Додали курсор
+    cursors = this.input.keyboard.createCursorKeys();
 
-//курсор
-cursors = this.input.keyboard.createCursorKeys();
+    stars = this.physics.add.group({
+        key: 'star',
+        repeat: 111,
+        setXY: { x: 12, y: 0, stepX: 90 }
+    });
 
-stars = this.physics.add.group({
-    key: 'star',
-    repeat: 111,
-    setXY: { x: 12, y: 0, stepX: 90 }
-});
+    stars.children.iterate(function (child) {
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    });
 
+    bombs = this.physics.add.group();
 
+    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    //Додали зіткнення зірок з платформою
+    this.physics.add.collider(player, platforms);
+    this.physics.add.collider(stars, platforms);
+    this.physics.add.collider(bombs, platforms);
+
+    this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
 
 function update() {
     if (gameOver) {
         return;
     }
-    //керування гравцем
+    //Додали керування персонажем
     if (cursors.left.isDown) {
         player.setVelocityX(-160);
         player.anims.play('left', true);
@@ -131,10 +147,35 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-480);
     }
-    //збір зірок
-    function collectStar(player, star) {
-        star.disableBody(true, true);
-        score += 10;
-        scoreText.setText('Score: ' + score);
+}
+//Додали збираня зірок
+function collectStar(player, star) {
+    star.disableBody(true, true);
+    score += 10;
+    scoreText.setText('Score: ' + score);
+
+    var x = Phaser.Math.Between(0, config.width);
+    var y = Phaser.Math.Between(0, config.height);
+    var bomb = bombs.create(x, y, 'bomb');
+    bomb.setScale(1);
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+    if (stars.countActive(true) === 0) {
+        stars.children.iterate(function (child) {
+            child.enableBody(true, child.x, 0, true, true);
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        });
     }
+}
+
+function hitBomb(player, bomb) {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
 }

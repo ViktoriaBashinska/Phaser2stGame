@@ -54,9 +54,9 @@ function create() {
     objects = this.physics.add.staticGroup();
 
     for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)) {
-        objects.create(x, 987, 'crate').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 987, 'stone').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 989, 'tree').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 987, 'crate').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 987, 'stone').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 989, 'tree').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
     }
 
 
@@ -69,6 +69,16 @@ function create() {
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
     //Додали слідкування камери за спрайтом
     this.cameras.main.startFollow(player);
+
+    var x = 0;
+    while (x < worldWidth) {
+        // Змінили діапазон висоти платформ
+        var y = Phaser.Math.FloatBetween(540, 1080); 
+        // Зменшуємо масштаб платформ
+        platforms.create(x, y, 'ground').setScale(0.5).refreshBody(); 
+        // Збільшили відстань між платформами
+        x += Phaser.Math.FloatBetween(200, 700); 
+    }
 
 
     for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {

@@ -100,11 +100,15 @@ function create() {
         repeat: -1
     });
 
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
-        var y = Phaser.Math.FloatBetween(100, 1000)
-        console.log(Fx, y)
-        platforms.create(x, y, "ground");
-    }
+//курсор
+cursors = this.input.keyboard.createCursorKeys();
+
+stars = this.physics.add.group({
+    key: 'star',
+    repeat: 111,
+    setXY: { x: 12, y: 0, stepX: 90 }
+});
+
 
 }
 

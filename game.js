@@ -98,5 +98,10 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-480);
     }
-}
+    //збір зірок
+    function collectStar(player, star) {
+        star.disableBody(true, true);
+        score += 10;
+        scoreText.setText('Score: ' + score);
+    }
 }

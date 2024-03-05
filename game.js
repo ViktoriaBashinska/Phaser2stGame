@@ -46,21 +46,24 @@ function create() {
     //додаємо платформи
     platforms = this.physics.add.staticGroup();
     //додаємо землю на всю ширину екрану
-    for (var x = 0; x < worldWidth; x = x + 384){
+    for (var x = 0; x < worldWidth; x = x + 384) {
         console.log(x)
-        platforms.create(x, 1080-93, "ground").setOrigin(0, 0).refreshBody();
+        platforms.create(x, 1080 - 93, "ground").setOrigin(0, 0).refreshBody();
     }
 
     objects = this.physics.add.staticGroup();
 
-    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)){
-        objects.create(x, 987,'crate').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 987,'stone').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 989,'tree').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)) {
+        objects.create(x, 987, 'crate').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 987, 'stone').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects.create(x, 989, 'tree').setScale(Phaser.Math.FloatBetween(0.5, 2,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
     }
 
 
-
+    //Додали гравця
+    player = this.physics.add.sprite(1500, 900, 'dude');
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(false);
 
 
 
@@ -69,7 +72,7 @@ function create() {
         console.log(Fx, y)
         platforms.create(x, y, "ground");
     }
-    
+
 }
 
 function update() {

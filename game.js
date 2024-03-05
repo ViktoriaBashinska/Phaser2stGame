@@ -64,7 +64,11 @@ function create() {
     player = this.physics.add.sprite(1500, 900, 'dude');
     player.setBounce(0.2);
     player.setCollideWorldBounds(false);
-
+    //Налаштування камери
+    this.cameras.main.setBounds(0, 0, worldWidth, 1080);
+    this.physics.world.setBounds(0, 0, worldWidth, 1080);
+    //Додали слідкування камери за спрайтом
+    this.cameras.main.startFollow(player);
 
 
     for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {

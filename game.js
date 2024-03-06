@@ -3,6 +3,7 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
+    playerSpeed:200,
     physics: {
         default: 'arcade',
         arcade: {
@@ -16,7 +17,7 @@ var config = {
         update: update
     }
 };
-
+var game = new Phaser.Game(config);
 var player;
 var stars;
 var bombs;
@@ -25,50 +26,70 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-var game = new Phaser.Game(config);
-var worldWidth = 9600;
+var worldWidth = config.width * 2;
 
 function preload() {
     //Додали асети
     this.load.image('fon', 'assets/fon.webp');
-    this.load.image('ground', 'assets/platform.png');
+    this.load.image('ground', 'assets/2.png');
     this.load.image('crate', 'assets/Crate.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('tree', 'assets/Tree_3.png');
     this.load.image('stone', 'assets/Stone.png');
     this.load.image('bomb', 'assets/bomb.png');
+    this.load.image('SkyGroundStart', 'assets/13.png');
+    this.load.image('SkyGround', 'assets/14.png');
+    this.load.image('SkyGroundEnd', 'assets/15.png');
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
-    this.load.audio('collectStarSound', 'assets/collect_star.mp3');
-    this.load.audio('explosionSound', 'assets/explosion.mp3');
 }
 
 function create() {
     //Додали платформу та небо
-    ////this.add.image(0, 0, 'fon').setOrigin(0,0)
-    this.add.tileSprite(0, 0, worldWidth, 1080, "fon").setOrigin(0, 0);
+    this.add.tileSprite(0, 0, worldWidth, 1080, "fon")
+    .setOrigin(0, 0)
+    .setScale(1)
+    .setDepth(0);
 
     platforms = this.physics.add.staticGroup();
     //Створення землі на всю ширину
-    for (var x = 0; x < worldWidth; x = x + 384) {
+    for (var x = 0; x < worldWidth; x = x + 128) {
         console.log(x)
-        platforms.create(x, 1080 - 93, 'ground').setOrigin(0, 0).refreshBody();
+        platforms
+        .create(x, 1080 - 128, 'ground')
+        .setOrigin(0, 0)
+        .refreshBody();
     }
-
-    //
     objects = this.physics.add.staticGroup();
 
     for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)){
-        objects.create(x, 987,'crate').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 987,'stone').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
-        objects.create(x, 989,'tree').setScale(Phaser.Math.FloatBetween(0.5, 1,)).setDepth(Phaser.Math.Between(0, 2)).setOrigin(0, 1).refreshBody();
+        objects
+        .create(x, 987,'crate')
+        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+        .setDepth(Phaser.Math.Between(1, 3))
+        .setOrigin(0, 1)
+        .refreshBody();
+        objects
+        .create(x, 987,'stone')
+        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+        .setDepth(Phaser.Math.Between(1, 3))
+        .setOrigin(0, 1)
+        .refreshBody();
+        objects
+        .create(x, 989,'tree')
+        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+        .setDepth(Phaser.Math.Between(1, 3))
+        .setOrigin(0, 1)
+        .refreshBody();
     }
     //Додали гравця
 
     player = this.physics.add.sprite(1500, 900, 'dude');
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(false);
+    player
+        .setBounce(0.2)
+        .setCollideWorldBounds(false)
+        .setDepth(Phaser.Math.Between(2));
     //Налаштування камери
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
@@ -81,8 +102,6 @@ function create() {
         platforms.create(x, y, 'ground').setScale(0.5).refreshBody(); // Зменшили масштаб платформ
         x += Phaser.Math.FloatBetween(200, 700); // Збільшили відстань між платформами
     }
-
-
 
     this.anims.create({
         key: 'left',
@@ -126,6 +145,14 @@ function create() {
 
     this.physics.add.overlap(player, stars, collectStar, null, this);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+    //додали плаформи випадковим чином
+    for(var x = 0; x < worldWidth; x = x + Phaser.Math.Between(400, 500)){
+        var y = Phaser.Math.Between(100, 700)
+
+        platforms.create(x, y,'SkyGroundStart');
+        platforms.create(x + 128, y,'SkyGround' )
+    }
 }
 
 function update() {

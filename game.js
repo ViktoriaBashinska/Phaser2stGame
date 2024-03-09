@@ -3,7 +3,7 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
-    playerSpeed:200,
+    playerSpeed:400,
     physics: {
         default: 'arcade',
         arcade: {
@@ -26,7 +26,7 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-var worldWidth = config.width * 2;
+var worldWidth = config.width * 5;
 
 function preload() {
     //Додали асети
@@ -151,7 +151,8 @@ function create() {
         var y = Phaser.Math.Between(100, 700)
 
         platforms.create(x, y,'SkyGroundStart');
-        platforms.create(x + 128, y,'SkyGround' )
+        platforms.create(x + 128, y,'SkyGround' );
+        platforms.create(x + 128*2, y, "SkyGroundEnd");
     }
 }
 

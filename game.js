@@ -3,7 +3,7 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
-    playerSpeed:400,
+    playerSpeed: 1000,
     physics: {
         default: 'arcade',
         arcade: {
@@ -26,7 +26,7 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-var worldWidth = config.width * 5;
+var worldWidth = config.width * 2;
 
 function preload() {
     //Додали асети
@@ -48,40 +48,40 @@ function preload() {
 function create() {
     //Додали платформу та небо
     this.add.tileSprite(0, 0, worldWidth, 1080, "fon")
-    .setOrigin(0, 0)
-    .setScale(1)
-    .setDepth(0);
+        .setOrigin(0, 0)
+        .setScale(1)
+        .setDepth(0);
 
     platforms = this.physics.add.staticGroup();
     //Створення землі на всю ширину
     for (var x = 0; x < worldWidth; x = x + 128) {
         console.log(x)
         platforms
-        .create(x, 1080 - 128, 'ground')
-        .setOrigin(0, 0)
-        .refreshBody();
+            .create(x, 1080 - 128, 'ground')
+            .setOrigin(0, 0)
+            .refreshBody();
     }
     objects = this.physics.add.staticGroup();
 
-    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)){
+    for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)) {
         objects
-        .create(x, 987,'crate')
-        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
-        .setDepth(Phaser.Math.Between(1, 3))
-        .setOrigin(0, 1)
-        .refreshBody();
+            .create(x, 987, 'crate')
+            .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+            .setDepth(Phaser.Math.Between(1, 3))
+            .setOrigin(0, 1)
+            .refreshBody();
         objects
-        .create(x, 987,'stone')
-        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
-        .setDepth(Phaser.Math.Between(1, 3))
-        .setOrigin(0, 1)
-        .refreshBody();
+            .create(x, 987, 'stone')
+            .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+            .setDepth(Phaser.Math.Between(1, 3))
+            .setOrigin(0, 1)
+            .refreshBody();
         objects
-        .create(x, 989,'tree')
-        .setScale(Phaser.Math.FloatBetween(0.5, 1,))
-        .setDepth(Phaser.Math.Between(1, 3))
-        .setOrigin(0, 1)
-        .refreshBody();
+            .create(x, 989, 'tree')
+            .setScale(Phaser.Math.FloatBetween(0.5, 1,))
+            .setDepth(Phaser.Math.Between(1, 3))
+            .setOrigin(0, 1)
+            .refreshBody();
     }
     //Додали гравця
 
@@ -98,8 +98,7 @@ function create() {
 
     var x = 0;
     while (x < worldWidth) {
-        var y = Phaser.Math.FloatBetween(540, 1080); // Змінили діапазон висоти платформ
-        platforms.create(x, y, 'ground').setScale(0.5).refreshBody(); // Зменшили масштаб платформ
+        var y = Phaser.Math.FloatBetween(500, 1080); // Змінили діапазон висоти платформ
         x += Phaser.Math.FloatBetween(200, 700); // Збільшили відстань між платформами
     }
 
@@ -136,8 +135,10 @@ function create() {
     });
 
     bombs = this.physics.add.group();
-
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    // додаємо рахунок
+    scoreText = this.add.text(100, 100, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
+    scoreText.setOrigin (0, 0)
+    .setScrollFactor(0) 
     //Додали зіткнення зірок з платформою
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
@@ -147,12 +148,12 @@ function create() {
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     //додали плаформи випадковим чином
-    for(var x = 0; x < worldWidth; x = x + Phaser.Math.Between(400, 500)){
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.Between(400, 500)) {
         var y = Phaser.Math.Between(100, 700)
 
-        platforms.create(x, y,'SkyGroundStart');
-        platforms.create(x + 128, y,'SkyGround' );
-        platforms.create(x + 128*2, y, "SkyGroundEnd");
+        platforms.create(x, y, 'SkyGroundStart');
+        platforms.create(x + 128, y, 'SkyGround');
+        platforms.create(x + 128 * 2, y, "SkyGroundEnd");
     }
 }
 

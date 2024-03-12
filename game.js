@@ -7,7 +7,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 200 },
             debug: false
         }
     },
@@ -24,8 +24,10 @@ var bombs;
 var platforms;
 var cursors;
 var score = 0;
+var lifes = 3;
 var gameOver = false;
 var scoreText;
+var lifeText;
 var worldWidth = config.width * 2;
 
 function preload() {
@@ -137,7 +139,12 @@ function create() {
     bombs = this.physics.add.group();
     //додаємо рахунок
     scoreText = this.add.text(100, 100, 'Score: 0', { fontSize: '32px', fill: '#FFF' })
-        .setOrigin(0, 0)
+    scoreText.setOrigin(0, 0)
+        .setDepth(10)
+        .setScrollFactor(0);
+    //додали життя
+    lifesText=this.add.text(100, 150, 'Lifes: ' + lifes, { fontSize: '32px', fill: '#FFF' })
+    lifesText.setOrigin(0, 0)
         .setDepth(10)
         .setScrollFactor(0);
     //Додали зіткнення зірок з платформою

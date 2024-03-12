@@ -143,7 +143,7 @@ function create() {
         .setDepth(10)
         .setScrollFactor(0);
     //додали життя
-    lifesText=this.add.text(100, 150, 'Lifes: ' + lifes, { fontSize: '32px', fill: '#FFF' })
+    lifesText = this.add.text(100, 150, 'Lifes: ' + lifes, { fontSize: '32px', fill: '#FFF' })
     lifesText.setOrigin(0, 0)
         .setDepth(10)
         .setScrollFactor(0);
@@ -207,12 +207,36 @@ function collectStar(player, star) {
     }
 }
 
-function hitBomb(player, bomb) {
-    this.physics.pause();
+    function hitBomb(player, bomb) {
+        lifes--;
 
-    player.setTint(0xff0000);
+        if (lives <= 0) {
+            this.physics.pause();
+            player.setTint(0xff0000);
+            player.anims.play('turn');
+            gameOver = true;
 
-    player.anims.play('turn');
+            //Display game over message
+            scoreText.setText('Game Over - Final Score: ' + score);
+        } else {
+            // Update lives text
+            lifesText.setText('Lifes: ' + lifes);
 
-    gameOver = true;
+            // Reset player and bombs
+            player.setVelocity(0, 0);
+            player.setX(1500);
+            player.setY(900);
+            player.clearTint();
+
+            bomb.disableBody(true, true); // Destroy all bombs
+
+            // Resume physics
+            this.physics.resume();
+            this.physics.pause();
+            player.setTint(0xff0000);
+            player.anims.play('turn');
+            gameOver = true;
+
+            //scoreText.setText('Final Score: ' + score);
+    }
 }

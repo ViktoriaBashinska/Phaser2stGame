@@ -132,7 +132,6 @@ function create() {
         repeat: 111,
         setXY: { x: 12, y: 0, stepX: 90 }
     });
-
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
@@ -152,6 +151,11 @@ function create() {
     var resetButton = this.add.text(400, 450, "reset", { fontSize: "40px", fill: "#ccc" })
         .setInteractive()
         .setScrollFactor(0);
+
+    resetButton.on("pointerdown", function () {
+        console.log ("restart")
+        refreshBody()
+    });
     //Додали зіткнення зірок з платформою
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
@@ -211,37 +215,20 @@ function collectStar(player, star) {
         });
     }
 }
-
+//колізія гравця та бомб
 function hitBomb(player, bomb) {
-    lifes--;
+    bomb.disableBody (true, true);
 
-    if (lives <= 0) {
-        this.physics.pause();
-        player.setTint(0xff0000);
-        player.anims.play('turn');
-        gameOver = true;
+    player.setTint(0xff0000);
+    life -= 1
+    lifeText.setText (showLife())
 
-        //Display game over message
-        scoreText.setText('Game Over - Final Score: ' + score);
-    } else {
-        // Update lives text
-        lifesText.setText('Lifes: ' + lifes);
+    console.log ("bomb")
+    player.aims.play("turn");
 
-        // Reset player and bombs
-        player.setVelocity(0, 0);
-        player.setX(1500);
-        player.setY(900);
-        player.clearTint();
-
-        bomb.disableBody(true, true); // Destroy all bombs
-
-        // Resume physics
-        this.physics.resume();
-        this.physics.pause();
-        player.setTint(0xff0000);
-        player.anims.play('turn');
-        gameOver = true;
-
-        //scoreText.setText('Final Score: ' + score);
-    }
+    if (life == 0) gameOver = true;
+}
+//перезапуск гри
+function refreshBody (){
+    console.log ("game over")
 }

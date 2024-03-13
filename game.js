@@ -24,7 +24,7 @@ var bombs;
 var platforms;
 var cursors;
 var score = 0;
-var lifes = 3;
+var life = 3;
 var gameOver = false;
 var scoreText;
 var lifeText;
@@ -58,7 +58,7 @@ function create() {
     platforms = this.physics.add.staticGroup();
     //Створення землі на всю ширину
     for (var x = 0; x < worldWidth; x = x + 128) {
-        console.log(x)
+       // console.log(x)
         platforms
             .create(x, 1080 - 128, 'ground')
             .setOrigin(0, 0)
@@ -87,7 +87,6 @@ function create() {
             .refreshBody();
     }
     //Додали гравця
-
     player = this.physics.add.sprite(1500, 900, 'dude');
     player
         .setBounce(0.2)
@@ -143,12 +142,12 @@ function create() {
         .setDepth(10)
         .setScrollFactor(0);
     //додали життя
-    lifesText = this.add.text(1500, 100, showLife(), { fontSize: '32px', fill: '#FFF' })
-    lifesText.setOrigin(0, 0)
+    lifeText = this.add.text(1500, 100, showLife(), { fontSize: '32px', fill: '#FFF' })
+    lifeText.setOrigin(0, 0)
         .setDepth(10)
         .setScrollFactor(0);
     //кнопка перезапуску
-    var resetButton = this.add.text(400, 450, "reset", { fontSize: "40px", fill: "#ccc" })
+    var resetButton = this.add.text(100, 70, "reset", { fontSize: "40px", fill: "#ccc" })
         .setInteractive()
         .setScrollFactor(0);
 
@@ -197,7 +196,7 @@ function update() {
 //Додали збираня зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
-    score += 10;
+    score += 5;
     scoreText.setText('Score: ' + score);
 
     var x = Phaser.Math.Between(0, config.width);
@@ -221,17 +220,17 @@ function hitBomb(player, bomb) {
 
     player.setTint(0xff0000);
     life -= 1
-    lifeText.setText (showLife())
+    lifeText.setText(showLife())
 
     console.log ("bomb")
-    player.aims.play("turn");
+    player.anims.play("turn");
 
     if (life == 0) gameOver = true;
 }
 //перезапуск гри
 function refreshBody (){
     console.log ("game over")
-}
+};
 
 //смуга життя
 function showLife(){

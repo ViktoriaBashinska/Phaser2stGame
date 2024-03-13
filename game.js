@@ -7,7 +7,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 200 },
             debug: false
         }
     },
@@ -24,8 +24,11 @@ var bombs;
 var platforms;
 var cursors;
 var score = 0;
+var lifes = 3;
 var gameOver = false;
 var scoreText;
+var lifeText;
+
 var worldWidth = config.width * 2;
 
 function preload() {
@@ -98,7 +101,7 @@ function create() {
 
     var x = 0;
     while (x < worldWidth) {
-        var y = Phaser.Math.FloatBetween(500, 1080); // Змінили діапазон висоти платформ
+        var y = Phaser.Math.FloatBetween(500, 1080); // Змінили діапазон висоти платфор
         x += Phaser.Math.FloatBetween(200, 700); // Збільшили відстань між платформами
     }
 
@@ -135,10 +138,20 @@ function create() {
     });
 
     bombs = this.physics.add.group();
-    // додаємо рахунок
-    scoreText = this.add.text(100, 100, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
-    scoreText.setOrigin (0, 0)
-    .setScrollFactor(0) 
+    //додаємо рахунок
+    scoreText = this.add.text(100, 100, 'Score: 0', { fontSize: '32px', fill: '#FFF' })
+    scoreText.setOrigin(0, 0)
+        .setDepth(10)
+        .setScrollFactor(0);
+    //додали життя
+    lifesText = this.add.text(1500, 100, showLife(), { fontSize: '32px', fill: '#FFF' })
+    lifesText.setOrigin(0, 0)
+        .setDepth(10)
+        .setScrollFactor(0);
+    //кнопка перезапуску
+    var resetButton = this.add.text(400, 450, "reset", { fontSize: "40px", fill: "#ccc" })
+        .setInteractive()
+        .setScrollFactor(0);
     //Додали зіткнення зірок з платформою
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
@@ -200,11 +213,35 @@ function collectStar(player, star) {
 }
 
 function hitBomb(player, bomb) {
-    this.physics.pause();
+    lifes--;
 
-    player.setTint(0xff0000);
+    if (lives <= 0) {
+        this.physics.pause();
+        player.setTint(0xff0000);
+        player.anims.play('turn');
+        gameOver = true;
 
-    player.anims.play('turn');
+        //Display game over message
+        scoreText.setText('Game Over - Final Score: ' + score);
+    } else {
+        // Update lives text
+        lifesText.setText('Lifes: ' + lifes);
 
-    gameOver = true;
+        // Reset player and bombs
+        player.setVelocity(0, 0);
+        player.setX(1500);
+        player.setY(900);
+        player.clearTint();
+
+        bomb.disableBody(true, true); // Destroy all bombs
+
+        // Resume physics
+        this.physics.resume();
+        this.physics.pause();
+        player.setTint(0xff0000);
+        player.anims.play('turn');
+        gameOver = true;
+
+        //scoreText.setText('Final Score: ' + score);
+    }
 }

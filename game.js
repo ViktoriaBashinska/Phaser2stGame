@@ -232,3 +232,13 @@ function hitBomb(player, bomb) {
 function refreshBody (){
     console.log ("game over")
 }
+
+//смуга життя
+function showLife(){
+    var lifeLine = ""
+
+    for (var i = 0; i < life; i ++){
+        lifeLine += "❤"
+    }
+    return lifeLine
+}

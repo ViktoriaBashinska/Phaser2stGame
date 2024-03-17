@@ -3,11 +3,11 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
-    playerSpeed: 1000,
+    playerSpeed: 200,
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 200 },
+            gravity: { y: 300 },
             debug: false
         }
     },
@@ -28,7 +28,7 @@ var life = 3;
 var gameOver = false;
 var scoreText;
 var lifeText;
-
+var resetButton;
 var worldWidth = config.width * 2;
 
 function preload() {
@@ -43,6 +43,7 @@ function preload() {
     this.load.image('SkyGroundStart', 'assets/13.png');
     this.load.image('SkyGround', 'assets/14.png');
     this.load.image('SkyGroundEnd', 'assets/15.png');
+    this.load.image("resetButton", "assets/reset.button.png")
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
@@ -58,7 +59,7 @@ function create() {
     platforms = this.physics.add.staticGroup();
     //Створення землі на всю ширину
     for (var x = 0; x < worldWidth; x = x + 128) {
-       // console.log(x)
+        // console.log(x)
         platforms
             .create(x, 1080 - 128, 'ground')
             .setOrigin(0, 0)
@@ -147,14 +148,23 @@ function create() {
         .setDepth(10)
         .setScrollFactor(0);
     //кнопка перезапуску
-    var resetButton = this.add.text(100, 70, "reset", { fontSize: "40px", fill: "#ccc" })
-        .setInteractive()
-        .setScrollFactor(0);
+    //var resetButton = this.add.text(100, 70, "reset", { fontSize: "40px", fill: "#ccc" })
+      //  .setInteractive()
+       // .setScrollFactor(0);
 
-    resetButton.on("pointerdown", function () {
-        console.log ("restart")
-        refreshBody()
-    });
+
+resetButton = this.add.image(700, 500, 'resetButton')
+    resetButton.setOrigin(0, 0)
+    .setDepth(10)
+    .setScrollFactor(0)
+    .setInteractive()
+    .on('pointerdown', function () {
+            // Перезавантаження гри
+            location.reload();
+        });
+
+    resetButton.setVisible(false); // Початково ховаємо кнопку
+
     //Додали зіткнення зірок з платформою
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
@@ -192,7 +202,19 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-480);
     }
+    {
+        if (gameOver) {
+        return;
+    }
+     // Перевіряємо, чи життя рівне нулю, і показуємо кнопку
+     if (life === 0) {
+        resetButton.setVisible(true);
+    }
+
 }
+
+}
+
 //Додали збираня зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
@@ -215,28 +237,44 @@ function collectStar(player, star) {
     }
 }
 //колізія гравця та бомб
+var isHitByBomb = false;
 function hitBomb(player, bomb) {
-    bomb.disableBody (true, true);
+    if (isHitByBomb) {
+        return;
+    }
+    isHitByBomb = true;
+
+    life = life - 1;
+    lifeText.setText(showlife());
+
+    var direction = (bomb.x < player.x) ? 1 : -1;
+    bomb.setVelocityX(300 * direction);
 
     player.setTint(0xff0000);
-    life -= 1
-    lifeText.setText(showLife())
 
-    console.log ("bomb")
-    player.anims.play("turn");
+    this.time.addEvent({
+        delay: 1000,
+        callback: function() {
+            player.clearTint();
+            isHitByBomb = false;
 
-    if (life == 0) gameOver = true;
+            if (life === 0) {
+                gameOver = true;
+                resetButton.setVisible(true); // Показуємо кнопку перезавантаження
+                this.physics.pause();
+                player.anims.play('turn');
+            }
+        },
+        callbackScope: this,
+        loop: false
+    });
 }
-//перезапуск гри
-function refreshBody (){
-    console.log ("game over")
-};
 
 //смуга життя
-function showLife(){
+function showLife() {
     var lifeLine = ""
 
-    for (var i = 0; i < life; i ++){
+    for (var i = 0; i < life; i++) {
         lifeLine += "❤"
     }
     return lifeLine

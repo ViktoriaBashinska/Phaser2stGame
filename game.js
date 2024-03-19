@@ -3,11 +3,11 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
-    playerSpeed: 200,
+    playerSpeed: 800,
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 250 },
             debug: false
         }
     },
@@ -23,6 +23,7 @@ var stars;
 var bombs;
 var platforms;
 var cursors;
+var playerSpeed=800;
 var score = 0;
 var life = 3;
 var gameOver = false;
@@ -57,7 +58,7 @@ function create() {
     platforms = this.physics.add.staticGroup();
     //Створення землі на всю ширину
     for (var x = 0; x < worldWidth; x = x + 128) {
-        // console.log(x)
+        //console.log(x)
         platforms
             .create(x, 1080 - 128, 'ground')
             .setOrigin(0, 0)

@@ -172,7 +172,7 @@ function create() {
      .setInteractive()
      .setDepth(10)
      .setScrollFactor(0)
-    restartButton.on('pointerdown', restartGame); // Додаємо обробник подій для натискання на кнопку
+    .on('pointerdown', restartGame); // Додаємо обробник подій для натискання на кнопку
 }
 
 function restartGame() {

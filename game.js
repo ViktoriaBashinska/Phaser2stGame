@@ -23,12 +23,13 @@ var stars;
 var bombs;
 var platforms;
 var cursors;
-var playerSpeed=800;
+var playerSpeed = 800;
 var score = 0;
 var life = 3;
 var gameOver = false;
 var scoreText;
 var lifeText;
+var restartButton;
 var worldWidth = config.width * 2;
 
 function preload() {
@@ -65,7 +66,7 @@ function create() {
             .refreshBody();
     }
     objects = this.physics.add.staticGroup();
-//додали об'єкти
+    //додали об'єкти
     for (var x = 0; x <= worldWidth; x = x + Phaser.Math.Between(200, 800)) {
         objects
             .create(x, 987, 'crate')
@@ -100,7 +101,7 @@ function create() {
 
     var x = 0;
     while (x < worldWidth) {
-        var y = Phaser.Math.FloatBetween(500, 1080); // Змінили діапазон висоти платфор
+        var y = Phaser.Math.FloatBetween(500, 1080); // Змінили діапазон висоти платформ
         x += Phaser.Math.FloatBetween(200, 700); // Збільшили відстань між платформами
     }
 
@@ -116,7 +117,7 @@ function create() {
         frames: [{ key: 'dude', frame: 4 }],
         frameRate: 20
     });
-    
+
     this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
@@ -146,6 +147,8 @@ function create() {
     lifeText.setOrigin(0, 0)
         .setDepth(10)
         .setScrollFactor(0);
+    
+
 
 
     //Додали зіткнення зірок з платформою
@@ -164,9 +167,11 @@ function create() {
         platforms.create(x + 128, y, 'SkyGround');
         platforms.create(x + 128 * 2, y, "SkyGroundEnd");
     }
-//кнопка перезапуску гри
-    restartButton = this.add.text(100, 150, 'Restart', { fontSize: '32px', fill: '#FFF' });
-    restartButton.setInteractive(); // Додаємо можливість взаємодії з кнопкою
+     //додали кнопку перезапуску
+     restartButton = this.add.text(100, 70, 'Restart', { fontSize: '32px', fill: '#FFF' })
+     .setInteractive()
+     .setDepth(10)
+     .setScrollFactor(0)
     restartButton.on('pointerdown', restartGame); // Додаємо обробник подій для натискання на кнопку
 }
 
@@ -179,14 +184,13 @@ function restartGame() {
     gameOver = false;
     isHitByBomb = false;
 
-    // Очистіть групи об'єктів, якщо потрібно, і створіть знову
-    // Наприклад:
+    // очищення групи об'єктів
     stars.clear(true, true);
     bombs.clear(true, true);
     createStars();
     createBombs();
 
-    // Поверніть гравця на його початкове місце
+    // Повернули гравця на його початкове місце
     player.setPosition(1500, 900);
 }
 
@@ -209,8 +213,8 @@ function update() {
         player.setVelocityY(-480);
     }
 
-     // Якщо гра закінчилася, показати кнопку перезапуску
-     if (gameOver) {
+    // Якщо гра закінчилася, показати кнопку перезапуску
+    if (gameOver) {
         restartButton.setVisible(true);
     } else {
         restartButton.setVisible(false);
@@ -248,8 +252,29 @@ function hitBomb(player, bomb) {
 
     life = life - 1;
     lifeText.setText(showLife());
+    var direction = (bomb.x < player.x) ? 1 : -1;
+    bomb.setVelocity(300 * direction);
+
+    player.setTint(0xff0000);
+    this.time.addEvent({
+        delay: 1000,
+        callback: function () {
+            player.clearTint();
+            isHitByBomb = false;
+
+            if (life === 0) {
+                gameover = true;
+                //показуємо кнопку перезапуску
+                restartButton.setVisible(true);
+                this.physics.pause();
+                player.anims.play("turn");
+            }
+        },
+        callbackScope: this,
+        loop: false
+    });
 }
-   
+
 
 //смуга життя
 function showLife() {

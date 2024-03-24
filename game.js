@@ -1,8 +1,8 @@
+
 var config = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
-    parent: game,
     playerSpeed: 800,
     physics: {
         default: 'arcade',
@@ -263,7 +263,7 @@ function hitBomb(player, bomb) {
             isHitByBomb = false;
 
             if (life === 0) {
-                gameover = true;
+                gameOver = true;
                 //показуємо кнопку перезапуску
                 restartButton.setVisible(true);
                 this.physics.pause();

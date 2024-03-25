@@ -1,4 +1,3 @@
-
 var config = {
     type: Phaser.AUTO,
     width: 1920,
@@ -21,6 +20,7 @@ var game = new Phaser.Game(config);
 var player;
 var stars;
 var bombs;
+var objects;
 var platforms;
 var cursors;
 var playerSpeed = 800;
@@ -148,7 +148,6 @@ function create() {
         .setDepth(10)
         .setScrollFactor(0);
     
-
 
 
     //Додали зіткнення зірок з платформою

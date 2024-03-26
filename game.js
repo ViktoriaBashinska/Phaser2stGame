@@ -2,7 +2,7 @@ var config = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
-    playerSpeed: 800,
+    playerSpeed: 1500,
     physics: {
         default: 'arcade',
         arcade: {
@@ -23,14 +23,14 @@ var bombs;
 var objects;
 var platforms;
 var cursors;
-var playerSpeed = 800;
+var playerSpeed = 1500;
 var score = 0;
 var life = 3;
 var gameOver = false;
 var scoreText;
 var lifeText;
 var restartButton;
-var worldWidth = config.width * 2;
+var worldWidth = config.width * 5;
 
 function preload() {
     //Додали асети
@@ -226,13 +226,13 @@ function collectStar(player, star) {
     score += 5;
     scoreText.setText('Score: ' + score);
 
-    var x = Phaser.Math.Between(0, config.width);
-    var y = Phaser.Math.Between(0, config.height);
-    var bomb = bombs.create(x, y, 'bomb');
-    bomb.setScale(1);
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+     var x = Phaser.Math.Between(0, config.width);
+     var y = Phaser.Math.Between(0, config.height);
+     var bomb = bombs.create(x, y, 'bomb');
+     bomb.setScale(1);
+     bomb.setBounce(1);
+     bomb.setCollideWorldBounds(true);
+     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
     if (stars.countActive(true) === 0) {
         stars.children.iterate(function (child) {

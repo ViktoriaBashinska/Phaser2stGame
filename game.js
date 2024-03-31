@@ -147,7 +147,7 @@ function create() {
     lifeText.setOrigin(0, 0)
         .setDepth(10)
         .setScrollFactor(0);
-    
+
 
 
     //Додали зіткнення зірок з платформою
@@ -166,12 +166,12 @@ function create() {
         platforms.create(x + 128, y, 'SkyGround');
         platforms.create(x + 128 * 2, y, "SkyGroundEnd");
     }
-     //додали кнопку перезапуску
-     restartButton = this.add.text(100, 70, 'Restart', { fontSize: '32px', fill: '#FFF' })
-     .setInteractive()
-     .setDepth(10)
-     .setScrollFactor(0)
-    .on('pointerdown', restartGame); // Додаємо обробник подій для натискання на кнопку
+    //додали кнопку перезапуску
+    restartButton = this.add.text(100, 70, 'Restart', { fontSize: '32px', fill: '#FFF' })
+        .setInteractive()
+        .setDepth(10)
+        .setScrollFactor(0)
+        .on('pointerdown', restartGame); // Додаємо обробник подій для натискання на кнопку
 }
 
 function restartGame() {
@@ -226,13 +226,13 @@ function collectStar(player, star) {
     score += 5;
     scoreText.setText('Score: ' + score);
 
-     var x = Phaser.Math.Between(0, config.width);
-     var y = Phaser.Math.Between(0, config.height);
-     var bomb = bombs.create(x, y, 'bomb');
-     bomb.setScale(1);
-     bomb.setBounce(1);
-     bomb.setCollideWorldBounds(true);
-     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    var x = Phaser.Math.Between(0, config.width);
+    var y = Phaser.Math.Between(0, config.height);
+    var bomb = bombs.create(x, y, 'bomb');
+    bomb.setScale(1);
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
     if (stars.countActive(true) === 0) {
         stars.children.iterate(function (child) {

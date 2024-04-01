@@ -19,6 +19,7 @@ var config = {
 
 var game = new Phaser.Game(config);
 var player;
+var enemy;
 var stars;
 var bombs;
 var objects;
@@ -166,10 +167,8 @@ function restartGame() {
     lifeText.setText(showLife());
     scoreText.setText('Score: 0');
     gameOver = false;
-
     stars.clear(true, true);
     bombs.clear(true, true);
-    
     stars = this.physics.add.group({
         key: 'star',
         repeat: 111,

@@ -45,6 +45,7 @@ function preload() {
     this.load.image('SkyGroundStart', 'assets/13.png');
     this.load.image('SkyGround', 'assets/14.png');
     this.load.image('SkyGroundEnd', 'assets/15.png');
+    this.load.image("enemy", "assets/ghost.png")
     this.load.spritesheet('dude', 'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 });
 }
@@ -109,6 +110,7 @@ function create() {
         repeat: -1
     });
 
+
     // Додали курсор
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -153,7 +155,7 @@ function create() {
     }
 
     // Додавання кнопки перезавантаження
-    restartButton = this.add.text(100, 700, 'Restart', { fontSize: '32px', fill: '#FFF' }).setInteractive().setScrollFactor(0);
+    restartButton = this.add.text(100, 200, 'Restart', { fontSize: '32px', fill: '#FFF' }).setInteractive().setScrollFactor(0);
     restartButton.setVisible(false); // Початково ховаємо кнопку
     restartButton.on('pointerdown', () => {
         restartGame.call(this);
@@ -305,6 +307,7 @@ function hitBomb(player, bomb) {
         loop: false
     });
 }
+
 
 // Смуга життя
 function showLife() {
